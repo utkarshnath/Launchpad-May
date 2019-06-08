@@ -3,7 +3,7 @@ using namespace std;
 int main(){
     char arr[100];
 
-    cin.getline(arr,100,"wef");
+    cin.getline(arr,100,'6');
     /*
     int i=0;
     char ch = cin.get();
