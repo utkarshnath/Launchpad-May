@@ -2,7 +2,7 @@
 using namespace std;
 void f(int input[],int output[],int inputIndex,int outputIndex,int n){
         if(inputIndex>=n){
-            for(int i=0;i<n;i++){
+            for(int i=0;i<outputIndex;i++){
                 cout<<output[i];
             }
             cout<<endl;
