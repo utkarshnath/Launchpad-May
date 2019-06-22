@@ -12,6 +12,7 @@ void f(int n){
 }
 void f1(){
     static int i;
+    i = 10;
     i--;
     cout<<i<<endl;
 }

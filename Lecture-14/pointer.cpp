@@ -43,7 +43,9 @@ message* ptr = new message[100];
 chatHistroy ch;
 ch.arr  = ptr;
 ch.n = 10;
-print(*(ch.arr));
+print(*ch.arr);
+print(ch->arr);
+
 }
 
 
