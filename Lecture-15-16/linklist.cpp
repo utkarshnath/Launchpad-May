@@ -363,11 +363,27 @@ pair<node *,node * > reversell3(node * head){
     p.second->next = NULL;
     return p;
 }
+node* kreverse(node * head,int k){
+    if(head==NULL){
+        //pair<node *,node*> p(NULL,NULL);
+        return NULL;
+    }
+    node * temp = head;
+    for(int i=1;temp->next && i<k;i++){
+        temp = temp->next;
+    }
+    node * newHead = temp->next;
+    temp->next = NULL;
+     pair<node *,node * > p = reversell3(head);
+     newHead = kreverse(newHead,k);
+     (p.second)->next = newHead;
+     return p.first;
+}
 int main(){
     node * head = createLinklist();
     print(head);
-    pair<node *,node * > temp = reversell3(head);
-    print(temp.first);
+    node* temp = kreverse(head,3);
+    print(temp);
     /*
     int n = length(head);
     head = mergeSort(head,0,n-1);
