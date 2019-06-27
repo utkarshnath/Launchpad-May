@@ -3,7 +3,9 @@ using namespace std;
 struct node{
     int data;
     node * next;
+    bool visited;
     node(int data){
+        visited = false;
         this->data= data;
         next = NULL;
     }
@@ -71,10 +73,12 @@ node* insertAtHead(node * head,int data){
     return newHead;
 }
 void print(node * head){
-    while(head!=NULL){
+    while(head!=NULL && head->visited==false){
+        head->visited = true;
         cout<<head->data<<"-->";
         head = head->next;
     }
+
     cout<<"NULL"<<endl;
 }
 void insertAtHead1(node * head,int data){
