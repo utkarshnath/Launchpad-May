@@ -1,5 +1,6 @@
 #include<iostream>
 #include<queue>
+#include<vector>
 using namespace std;
 struct node {
     int data;
@@ -158,19 +159,143 @@ void printAtDepthK(node * root,int k){
     printAtDepthK(root->right,k-1);
     return;
 }
+void printAtDiffLevel(node * root){
+    queue<node *>q1;
+    queue<node *>q2;
+    q1.push(root);
+    while(!q1.empty() || !q2.empty()){
+        while(!q1.empty()){
+            node * top = q1.front();
+            cout<<top->data<<" ";
+            q1.pop();
+            if(top->left){
+                q2.push(top->left);
+            }
+            if(top->right){
+                q2.push(top->right);
+            }
+        }
+        cout<<endl;
+        while(!q2.empty()){
+            node * top = q2.front();
+            cout<<top->data<<" ";
+            q2.pop();
+            if(top->left){
+                q1.push(top->left);
+            }
+            if(top->right){
+                q1.push(top->right);
+            }
+        }
+        cout<<endl;
+    }
+}
+int diameter(node * root){
+    if(!root){
+        return 0;
+    }
+    int ld = diameter(root->left);
+    int rd = diameter(root->right);
+    int lh = height(root->left);
+    int rh = height(root->right);
+    return max(lh+rh+1,max(rd,ld));
+}
+pair<int,int> diaFaster(node * root){
+    if(!root){
+        pair<int,int> p(0,0);
+        return p;
+    }
+    pair<int,int> left = diaFaster(root->left);
+    pair<int,int> right = diaFaster(root->right);
+    int ld = left.first;
+    int rd = right.first;
+    int lh = left.second;
+    int rh = right.second;
+    pair<int,int> curr;
+    curr.first = max(lh+rh+1,max(rd,ld));
+    curr.second = max(lh,rh)+1;
+    return curr;
+}
+bool find(node * root,int data){
+    if(!root){
+        return false;
+    }
+    if(root->data==data){
+        return true;
+    }
+    bool left = find(root->left,data);
+    bool right = find(root->right,data);
+    return left||right;
+}
+node * mirror(node * root){
+    if(root==NULL){
+        return NULL;
+    }
+    node * newRoot = new node(root->data);
+    newRoot->left = mirror(root->right);
+    newRoot->right = mirror(root->left);
+    return newRoot;
+}
+int findIndex(vector<int>v,int data,int start,int end){
+    for(int i=start;i<=end;i++){
+        if(v[i]==data){
+            return i;
+        }
+    }
+    return -1;
+}
+node * createTreeFromPreIn(vector<int>pre,vector<int>in,int pstart,int pend,int istart,int iend){
+    if(pstart>pend){
+        return NULL;
+    }
+    node * root = new node(pre[pstart]);
+    int index = findIndex(in,pre[pstart],istart,iend);
+    int len = index-istart;
+    root->left = createTreeFromPreIn(pre,in,pstart+1,pstart+len,istart,index-1);
+    root->right = createTreeFromPreIn(pre,in,pstart+len+1,pend,index+1,iend);
+    return root;
+}
+bool path(node * root,int data){
+    if(!root){
+        return false;
+    }
+    if(root->data==data){
+        cout<<data<<endl;
+        return true;
+    }
+    bool left = path(root->left,data);
+    bool right = path(root->right,data);
+    if(left || right){
+        cout<<root->data<<endl;
+        return true;
+    }
+    return false;
+}
 // 8 10 3 1 6 -1 14 -1 -1 4 7 13 -1 -1 -1 -1 -1 -1 -1
 int main(){
-node * root = createTree();
-preorder(root);
+
+//cout<<diameter(root)<<endl;;
+//node * root1 = mirror(root);
+//printAtDiffLevel(root1);
+vector<int> pre,in;
+pre.push_back(8);pre.push_back(10);pre.push_back(1);pre.push_back(6);
+pre.push_back(4);pre.push_back(7);pre.push_back(3);pre.push_back(14);
+pre.push_back(13);
+
+in.push_back(1);in.push_back(10);in.push_back(4);in.push_back(6);
+in.push_back(7);in.push_back(8);in.push_back(3);in.push_back(13);
+in.push_back(14);
+
+node * root1 = createTreeFromPreIn(pre,in,0,pre.size()-1,0,in.size()-1);
+printAtDiffLevel(root1);
 cout<<endl;
-inorder(root);
-cout<<endl;
-postorder(root);
-cout<<endl;
-levelorder(root);
+path(root1,4);
+/*
 cout<<height(root)<<endl;
 printAtDepthK(root,2);
 cout<<endl;
+printAtDiffLevel(root);
+
 /*
 cout<<endl;
 cout<<maxNode(root)<<endl;
