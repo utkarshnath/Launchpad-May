@@ -33,6 +33,76 @@ void addElement(node *& root,int data){
     }
     return;
 }
+bool search(node * root,int data){
+    if(!root){
+        return false;
+    }
+    if(root->data==data){
+        return true;
+    }
+    if(root->data > data){
+        return search(root->left,data);
+    }else{
+        return search(root->right,data);
+    }
+}
+bool findElement(node * root,int data){
+    while(root){
+        if(root->data == data){
+            return true;
+        }
+        if(root->data > data){
+            root = root->left;
+        }else{
+            root = root->right;
+        }
+    }
+    return false;
+}
+node * deleteElement(node * root,int data){
+    if(!root){
+        return NULL;
+    }
+    if(root->data == data){
+        // no child
+        if(!root->left && !root->right){
+            delete root;
+            return NULL;
+        }
+        // 1 child
+        if((!root->left && root->right) || (root->left && !root->right)){
+            node * temp;
+            if(root->left){
+                temp = root->left;
+            }else{
+                temp = root->right;
+            }
+            delete root;
+            return temp;
+        }
+        // 2 child
+        node * parent = root;
+        node * it = root->left;
+        while(it->right){
+            parent = it;
+            it = it->right;
+        }
+        if(parent!=root){
+            parent->right = it->left;
+            it->left = root->left;
+        }
+        it->right = root->right;
+        delete root;
+        return it;
+    }
+
+    if(root->data > data){
+        root->left = deleteElement(root->left,data);
+    }else{
+        root->right = deleteElement(root->right,data);
+    }
+    return root;
+}
 int minValue(node * root){
     while(root->left){
         root = root->left;
@@ -70,11 +140,27 @@ void printAtDiffLevel(node * root){
         cout<<endl;
     }
 }
+void printInRange(node * root,int k1,int k2){
+    if(!root){
+        return;
+    }
+    if(root->data >= k1){
+        printInRange(root->left,k1,k2);
+    }
+    if(root->data >= k1 && root->data<=k2){
+        cout<<root->data<<" ";
+    }
+   if(root->data < k2){
+        printInRange(root->right,k1,k2);
+   }
+}
 int main(){
     node * root = NULL;
-    addElement(root,1);addElement(root,-1);addElement(root,2);
-    addElement(root,5);addElement(root,10);addElement(root,4);
-    addElement(root,4);addElement(root,3);
+    addElement(root,8);addElement(root,3);addElement(root,10);
+    addElement(root,1);addElement(root,6);addElement(root,14);
+    addElement(root,4);addElement(root,7);addElement(root,13);
+    printAtDiffLevel(root);
+    root = deleteElement(root,8);
     printAtDiffLevel(root);
 }
 
