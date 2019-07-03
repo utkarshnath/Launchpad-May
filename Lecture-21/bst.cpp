@@ -154,14 +154,74 @@ void printInRange(node * root,int k1,int k2){
         printInRange(root->right,k1,k2);
    }
 }
+pair<node *,node *> llFromBst(node * root){
+    if(!root){
+        pair<node *,node *>p(0,0);
+        return p;
+    }
+    pair<node *,node *> left = llFromBst(root->left);
+    pair<node *,node *> right = llFromBst(root->right);
+    node * temp = new node(root->data);
+    if(left.second){
+        (left.second)->right = temp;
+    }else{
+        left.first = temp;
+        left.second = temp;
+    }
+
+    if(right.first){
+        temp->right = (right.first);
+        left.second = right.second;
+    }else{
+        left.second = temp;
+    }
+    //temp->left = left.second);
+    return left;
+}
+void print(node * head){
+    while(head){
+        cout<<head->data<<"-->";
+        head = head->right;
+    }
+    cout<<"NULL"<<endl;
+}
+bool checkBST(node * root){
+    static int prev = INT_MIN;
+    if(!root){
+        return true;
+    }
+    bool left = checkBST(root->left);
+    if(root->data < prev){
+        return false;
+    }
+    prev = root->data;
+    bool right = checkBST(root->right);
+    return left && right;
+}
+pair<bool,int> checkbalance(node * root){
+    if(!root){
+        pair<node *,node *>p(1,0);
+        return p;
+    }
+    pair<bool,int> left = checkbalance(root->left);
+    pair<bool,int> right = checkbalance(root->right);
+    pair<bool,int> curr;
+    int x = abs(left.second- right.second);
+    curr.first = left.first && right.first && (x<=1);
+    curr.second = max(left.second,right.second)+1;
+    return curr;
+}
 int main(){
     node * root = NULL;
     addElement(root,8);addElement(root,3);addElement(root,10);
     addElement(root,1);addElement(root,6);addElement(root,14);
     addElement(root,4);addElement(root,7);addElement(root,13);
     printAtDiffLevel(root);
-    root = deleteElement(root,8);
-    printAtDiffLevel(root);
+    //root = deleteElement(root,8);
+    //printAtDiffLevel(root);
+    pair<node *,node *> temp = llFromBst(root);
+    //cout<<temp.first->data<<endl;
+    print(temp.first);
 }
 
 
