@@ -211,6 +211,35 @@ pair<bool,int> checkbalance(node * root){
     curr.second = max(left.second,right.second)+1;
     return curr;
 }
+node * bstFromSorted(int arr[],int start,int end){
+    if(start>end){
+        return NULL;
+    }
+    int mid = (start+end)/2;
+    node * root = new node(arr[mid]);
+    root->left = bstFromSorted(arr,start,mid-1);
+    root->right = bstFromSorted(arr,mid+1,end);
+    return root;
+}
+int median(node * root,int len){
+    static int index = -1;
+    if(!root){
+        return -1;
+    }
+    int left = median(root->left);
+    if(left!=-1){
+        return left;
+    }
+    index++;
+    if(index==len/2){
+        return root->data;
+    }
+    int right = median(root->right);
+    if(right!=-1){
+        return right;
+    }
+    return -1;
+}
 int main(){
     node * root = NULL;
     addElement(root,8);addElement(root,3);addElement(root,10);
