@@ -11,6 +11,12 @@ struct node{
         this->value = value;
         next = NULL;
     }
+    ~node(){
+        cout<<" hello"<<endl;
+        if(next!=NULL){
+            delete next;
+        }
+    }
 };
 template <typename T>
 class hashtable{
@@ -23,10 +29,9 @@ class hashtable{
         int curr = 0;
         for(int i=0;i<key.size();i++){
             power = (power*37)%tableSize;
-            curr += key[i]*power;
+            curr += (key[i]*power)%tableSize;
         }
-        curr = curr%tableSize;
-        return curr;
+        return curr%tableSize;
     }
     void rehash(){
         node<T> ** oldTable = table;
@@ -43,7 +48,11 @@ class hashtable{
                 insert(it->key,it->value);
                 it = it->next;
             }
+            if(oldTable[i]!=NULL){
+                delete oldTable[i];
+            }
         }
+        delete [] oldTable;
     }
 public:
     hashtable(int size){
@@ -77,6 +86,7 @@ public:
         node<T>* parent = NULL;
         if(head->value==value){
             table[index] = head->next;
+            head->next = NULL;
             delete head;
         }
         while(head && head->value != value){
@@ -85,6 +95,7 @@ public:
         }
         if(head){
             parent->next = head->next;
+            head->next = NULL;
             delete head;
         }
         return;
